@@ -100,7 +100,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
         typeMapping.put("map", "Dict");
         typeMapping.put("date", "Date");
         typeMapping.put("Object", "Any");
-        typeMapping.put("DateTime", "DateTime");
+        typeMapping.put("DateTime", "ZonedDateTime");
         typeMapping.put("File", "String");
         typeMapping.put("UUID", "String");
         typeMapping.put("ByteArray", "Vector{UInt8}");
