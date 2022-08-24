@@ -5,46 +5,46 @@ struct {{classname}} <: OpenAPIClient.APIImpl
 end
 
 {{#operation}}
-function _oacinternal_{{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+function _oacinternal_{{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
 {{#allParams}}
 {{#hasValidation}}
 {{#maxLength}}
-    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :maxLength, {{paramName}}, {{maxLength}})
+    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :maxLength, in_{{paramName}}, {{maxLength}})
 {{/maxLength}}
 {{#minLength}}
-    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :minLength, {{paramName}}, {{minLength}})
+    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :minLength, in_{{paramName}}, {{minLength}})
 {{/minLength}}
 {{#maximum}}
-    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :maximum, {{paramName}}, {{maximum}}, {{#exclusiveMaximum}}true{{/exclusiveMaximum}}{{^exclusiveMaximum}}false{{/exclusiveMaximum}})
+    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :maximum, in_{{paramName}}, {{maximum}}, {{#exclusiveMaximum}}true{{/exclusiveMaximum}}{{^exclusiveMaximum}}false{{/exclusiveMaximum}})
 {{/maximum}}
 {{#minimum}}
-    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :minimum, {{paramName}}, {{minimum}}, {{#exclusiveMinimum}}true{{/exclusiveMinimum}}{{^exclusiveMinimum}}false{{/exclusiveMinimum}})
+    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :minimum, in_{{paramName}}, {{minimum}}, {{#exclusiveMinimum}}true{{/exclusiveMinimum}}{{^exclusiveMinimum}}false{{/exclusiveMinimum}})
 {{/minimum}}
 {{#maxItems}}
-    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :maxItems, {{paramName}}, {{maxItems}})
+    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :maxItems, in_{{paramName}}, {{maxItems}})
 {{/maxItems}}
 {{#minItems}}
-    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :minItems, {{paramName}}, {{minItems}})
+    OpenAPIClient.validate_param("{{paramName}}", "{{operationId}}", :minItems, in_{{paramName}}, {{minItems}})
 {{/minItems}}
 
 {{/hasValidation}}
 {{/allParams}}
-    _ctx = OpenAPIClient.Ctx(_api.client, "{{httpMethod}}", {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}, "{{path}}", [{{#authMethods}}"{{name}}", {{/authMethods}}]{{#bodyParam}}, {{paramName}}{{/bodyParam}})
+    _ctx = OpenAPIClient.Ctx(_api.client, "{{httpMethod}}", {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}, "{{path}}", [{{#authMethods}}"{{name}}", {{/authMethods}}]{{#bodyParam}}, in_{{paramName}}{{/bodyParam}})
 {{#pathParams}}
-    OpenAPIClient.set_param(_ctx.path, "{{baseName}}", {{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+    OpenAPIClient.set_param(_ctx.path, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
 {{/pathParams}}
 {{#queryParams}}
-    OpenAPIClient.set_param(_ctx.query, "{{baseName}}", {{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+    OpenAPIClient.set_param(_ctx.query, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
 {{/queryParams}}
 {{#headerParams}}
-    OpenAPIClient.set_param(_ctx.header, "{{baseName}}", {{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+    OpenAPIClient.set_param(_ctx.header, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
 {{/headerParams}}
 {{#formParams}}
 {{#notFile}}
-    OpenAPIClient.set_param(_ctx.form, "{{baseName}}", {{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+    OpenAPIClient.set_param(_ctx.form, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
 {{/notFile}}
 {{^notFile}}
-    OpenAPIClient.set_param(_ctx.file, "{{baseName}}", {{paramName}})  # type {{dataType}}
+    OpenAPIClient.set_param(_ctx.file, "{{baseName}}", in_{{paramName}})  # type {{dataType}}
 {{/notFile}}
 {{/formParams}}
     OpenAPIClient.set_header_accept(_ctx, [{{#produces}}"{{{mediaType}}}", {{/produces}}])
@@ -57,18 +57,18 @@ end
 {{/summary.length}}{{#notes.length}}{{{notes}}}
 
 {{/notes.length}}Params:
-{{#allParams}}- {{paramName}}::{{dataType}}{{#required}} (required){{/required}}
+{{#allParams}}- in_{{paramName}}::{{dataType}}{{#required}} (required){{/required}}
 {{/allParams}}
 
 Return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}
 """
-function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
-    _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, {{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}={{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
+function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+    _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=in_{{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
     OpenAPIClient.exec(_ctx)
 end
 
-function {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, {{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
-    _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, {{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}={{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
+function {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, in_{{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+    _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=in_{{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
     OpenAPIClient.exec(_ctx, response_stream)
 end
 
