@@ -4,7 +4,7 @@ module {{packageName}}
 using Random
 using Dates, TimeZones
 using OpenAPIClient
-import OpenAPIClient: field_name, property_type, hasproperty, validate_property, APIImpl, APIModel
+import OpenAPIClient: field_name, property_type, validate_property
 
 include("modelincludes.jl")
 {{#apiInfo}}{{#apis}}
