@@ -30,7 +30,7 @@ mutable struct {{classname}} <: OpenAPIClient.APIModel
         o = new()
         {{#allVars}}
         validate_property({{classname}}, Symbol("{{baseName}}"), {{name}})
-        setfield!(o, Symbol("{{name}}"), {{name}})
+        o.var"{{name}}" = {{name}}
         {{/allVars}}
         o
     end
