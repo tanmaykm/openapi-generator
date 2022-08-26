@@ -5,7 +5,6 @@ using Random
 using Dates, TimeZones
 using OpenAPIClient
 import OpenAPIClient: field_name, property_type, hasproperty, validate_property, APIImpl, APIModel
-import Base: convert, propertynames
 
 include("modelincludes.jl")
 {{#apiInfo}}{{#apis}}
@@ -21,6 +20,6 @@ export convert{{#model}}, {{classname}}{{/model}}
 export convert{{#apis}}, {{classname}}{{/apis}}
 {{/apiInfo}}
 
-export check_required, field_name, property_type, hasproperty, propertynames, validate_property, convert
+export check_required, field_name, property_type, validate_property
 
 end
