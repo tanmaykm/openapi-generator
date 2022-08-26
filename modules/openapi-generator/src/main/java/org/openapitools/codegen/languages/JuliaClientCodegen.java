@@ -298,7 +298,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
     /**
      * Return the type declaration for a given schema
      *
-     * @param schema the schema
+     * @param p the schema
      * @return the type declaration
      */
     @Override
