@@ -30,7 +30,7 @@ mutable struct {{classname}} <: OpenAPIClient.APIModel
         o = new()
         {{#allVars}}
         validate_property({{classname}}, Symbol("{{baseName}}"), {{name}})
-        setfield!(o, Symbol("{{name}}"), {{name}})
+        o.var"{{name}}" = {{name}}
         {{/allVars}}
         o
     end
@@ -52,7 +52,7 @@ function check_required(o::{{classname}})
 {{#allVars}}
 {{^isEnum}}
 {{#required}}
-    (getproperty(o, Symbol("{{baseName}}")) === nothing) && (return false)
+    o.var"{{baseName}}" === nothing && return false
 {{/required}}
 {{/isEnum}}
 {{/allVars}}
