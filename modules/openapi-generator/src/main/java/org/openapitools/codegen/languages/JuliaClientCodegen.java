@@ -5,8 +5,10 @@ import org.openapitools.codegen.*;
 import java.io.File;
 import java.util.*;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.servers.Server;
 
 import org.apache.commons.lang3.StringUtils;
 import static org.openapitools.codegen.utils.StringUtils.camelize;
@@ -238,6 +240,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
         name = name.replaceAll("\\.", "_");
         name = name.replaceAll("-", "_");
         name = name.replaceAll(" ", "_");
+        name = name.replaceAll("/", "_");
         return name.replaceAll("[^a-zA-Z0-9_{}]", "");
     }
 
@@ -409,5 +412,24 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
         CodegenProperty property = super.fromProperty(name, schema, required);
         property.baseName = escapeBaseName(property.baseName);
         return property;
+    }
+
+    /**
+     * Convert OAS Operation object to Codegen Operation object
+     *
+     * @param httpMethod HTTP method
+     * @param operation  OAS operation object
+     * @param path       the path of the operation
+     * @param servers    list of servers
+     * @return Codegen Operation object
+     */
+    @Override
+    public CodegenOperation fromOperation(String path,
+                                          String httpMethod,
+                                          Operation operation,
+                                          List<Server> servers) {
+        CodegenOperation op = super.fromOperation(path, httpMethod, operation, servers);
+        op.operationId = sanitizeName(op.operationId);
+        return op;
     }
 }
