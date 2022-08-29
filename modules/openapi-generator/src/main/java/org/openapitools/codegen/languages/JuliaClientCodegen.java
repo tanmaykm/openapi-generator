@@ -282,16 +282,16 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
     }
 
     @Override
-    public String getTypeDeclaration(Schema p) {
-        if (ModelUtils.isArraySchema(p)) {
-            ArraySchema ap = (ArraySchema) p;
+    public String getTypeDeclaration(Schema schema) {
+        if (ModelUtils.isArraySchema(schema)) {
+            ArraySchema ap = (ArraySchema) schema;
             Schema inner = ap.getItems();
-            return getSchemaType(p) + "{" + getTypeDeclaration(inner) + "}";
-        } else if (ModelUtils.isMapSchema(p)) {
-            Schema inner = getAdditionalProperties(p);
-            return getSchemaType(p) + "{String, " + getTypeDeclaration(inner) + "}";
+            return getSchemaType(schema) + "{" + getTypeDeclaration(inner) + "}";
+        } else if (ModelUtils.isMapSchema(schema)) {
+            Schema inner = getAdditionalProperties(schema);
+            return getSchemaType(schema) + "{String, " + getTypeDeclaration(inner) + "}";
         }
-        return super.getTypeDeclaration(p);
+        return super.getTypeDeclaration(schema);
     }    
 
 
@@ -302,12 +302,12 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
      * @return the type declaration
      */
     @Override
-    public String getSchemaType(Schema p) {
-        String openAPIType = super.getSchemaType(p);
+    public String getSchemaType(Schema schema) {
+        String openAPIType = super.getSchemaType(schema);
         String type = null;
 
         if (openAPIType == null) {
-            LOGGER.error("OpenAPI Type for {} is null. Default to Object instead.", p.getName());
+            LOGGER.error("OpenAPI Type for {} is null. Default to Object instead.", schema.getName());
             openAPIType = "Object";
         }
 
@@ -325,27 +325,27 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
 
     /**
      * Return the default value of the property
-     * @param p OpenAPI property object
+     * @param schema OpenAPI property object
      * @return string presentation of the default value of the property
      */
     @Override
-    public String toDefaultValue(Schema p) {
-        if (ModelUtils.isBooleanSchema(p)) {
-            if (p.getDefault() != null) {
-                return p.getDefault().toString();
+    public String toDefaultValue(Schema schema) {
+        if (ModelUtils.isBooleanSchema(schema)) {
+            if (schema.getDefault() != null) {
+                return schema.getDefault().toString();
             }
-        } else if (ModelUtils.isDateSchema(p)) {
+        } else if (ModelUtils.isDateSchema(schema)) {
             // TODO
-        } else if (ModelUtils.isDateTimeSchema(p)) {
+        } else if (ModelUtils.isDateTimeSchema(schema)) {
             // TODO
-        } else if (ModelUtils.isIntegerSchema(p) || ModelUtils.isLongSchema(p) || ModelUtils.isNumberSchema(p)) {
-            if (p.getDefault() != null) {
-                return p.getDefault().toString();
+        } else if (ModelUtils.isIntegerSchema(schema) || ModelUtils.isLongSchema(schema) || ModelUtils.isNumberSchema(schema)) {
+            if (schema.getDefault() != null) {
+                return schema.getDefault().toString();
             }
-        } else if (ModelUtils.isStringSchema(p)) {
-            if (p.getDefault() != null) {
-                String _default = (String) p.getDefault();
-                if (p.getEnum() == null) {
+        } else if (ModelUtils.isStringSchema(schema)) {
+            if (schema.getDefault() != null) {
+                String _default = (String) schema.getDefault();
+                if (schema.getEnum() == null) {
                     return "\"" + _default + "\"";
                 } else {
                     // convert to enum var name later in postProcessModels
@@ -391,22 +391,22 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
     }
 
     /**
-     * Convert OAS Property object to Codegen Property object.
+     * Convert OAS Property schema to Codegen Property object.
      * <p>
      * The return value is cached. An internal cache is looked up to determine
      * if the CodegenProperty return value has already been instantiated for
-     * the (String name, Schema p) arguments.
+     * the (String name, Schema schema) arguments.
      * Any subsequent processing of the CodegenModel return value must be idempotent
      * for a given (String name, Schema schema).
      *
      * @param name     name of the property
-     * @param p        OAS property schema
+     * @param schema   OAS property schema
      * @param required true if the property is required in the next higher object schema, false otherwise
      * @return Codegen Property object
      */    
     @Override
-    public CodegenProperty fromProperty(String name, Schema p, boolean required) {
-        CodegenProperty property = super.fromProperty(name, p, required);
+    public CodegenProperty fromProperty(String name, Schema schema, boolean required) {
+        CodegenProperty property = super.fromProperty(name, schema, required);
         property.baseName = escapeBaseName(property.baseName);
         return property;
     }
