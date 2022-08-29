@@ -11,16 +11,12 @@ include("modelincludes.jl")
 {{#apiInfo}}{{#apis}}
 include("api_{{classname}}.jl"){{/apis}}{{/apiInfo}}
 
-# export models
-{{#models}}
-export convert{{#model}}, {{classname}}{{/model}}
-{{/models}}
-
-# export operations
-{{#apiInfo}}
-export convert{{#apis}}, {{classname}}{{/apis}}
-{{/apiInfo}}
-
 export check_required, field_name, property_type, hasproperty, propertynames, validate_property, convert
 
-end
+# export models
+{{#models}}{{#model}}export {{classname}}
+{{/model}}{{/models}}
+# export operations
+{{#apiInfo}}{{#apis}}export {{classname}}
+{{/apis}}{{/apiInfo}}
+end # module {{packageName}}
