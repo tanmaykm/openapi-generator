@@ -21,18 +21,16 @@ end
     - {{name}}::{{datatype}}{{#description}} : {{description}}{{/description}}
 {{/allVars}}
 """
-mutable struct {{classname}} <: OpenAPIClient.APIModel
+Base.@kwdef mutable struct {{classname}} <: OpenAPIClient.APIModel
 {{#allVars}}
-    {{name}}::Any # spec type: Union{ Nothing, {{datatype}} } # spec name: {{baseName}}
+    {{name}}::Any = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}} # spec type: Union{ Nothing, {{datatype}} } # spec name: {{baseName}}
 {{/allVars}}
 
-    function {{classname}}(;{{#allVars}}{{name}}={{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}}, {{/allVars}})
-        o = new()
+    function {{classname}}({{#allVars}}{{name}}, {{/allVars}})
         {{#allVars}}
         validate_property({{classname}}, Symbol("{{baseName}}"), {{name}})
-        setfield!(o, Symbol("{{name}}"), {{name}})
         {{/allVars}}
-        o
+        return new({{#allVars}}{{name}}, {{/allVars}})
     end
 end # type {{classname}}
 
