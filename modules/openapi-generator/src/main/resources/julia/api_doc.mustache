@@ -11,8 +11,8 @@ Method | HTTP request | Description
 {{#operations}}
 {{#operation}}
 # **{{{operationId}}}**
-> {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}} <br/>
-> {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, in_{{paramName}}{{^isBodyParam}}::{{dataType}}{{/isBodyParam}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}}
+> {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}} <br/>
+> {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}}
 
 {{{summary}}}{{#notes}}
 
