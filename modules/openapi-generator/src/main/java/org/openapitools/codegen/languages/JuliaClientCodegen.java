@@ -208,7 +208,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
 
     @Override
     public String toVarName(String name) {
-        return escapeReservedWord(sanitizeName(name));
+        return name;
     }
 
     /**
@@ -225,7 +225,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
             return "ERROR_UNKNOWN";
         }
 
-        // if the name is just '$', map it to 'value' for the time being.
+        // if the name is just '$', map it to 'value', as that's sometimes used in the spec
         if ("$".equals(name)) {
             return "value";
         }
@@ -240,6 +240,10 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
         name = name.replaceAll(" ", "_");
         name = name.replaceAll("/", "_");
         return name.replaceAll("[^a-zA-Z0-9_{}]", "");
+    }
+
+    private boolean needsVarEscape(String name) {
+        return !name.matches("[a-zA-Z0-9_]*");
     }
 
     /**
@@ -410,25 +414,21 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
     public CodegenProperty fromProperty(String name, Schema schema, boolean required) {
         CodegenProperty property = super.fromProperty(name, schema, required);
         property.baseName = escapeBaseName(property.baseName);
+        // if the name needs any escaping, we set it to var"name"
+        if (needsVarEscape(property.name)) {
+            property.name = "var\"" + property.name + "\"";
+        }
         return property;
     }
 
     /**
-     * Convert OAS Operation object to Codegen Operation object
+     * Return the operation ID (method name)
      *
-     * @param httpMethod HTTP method
-     * @param operation  OAS operation object
-     * @param path       the path of the operation
-     * @param servers    list of servers
-     * @return Codegen Operation object
+     * @param operationId operation ID
+     * @return the sanitized method name
      */
-    @Override
-    public CodegenOperation fromOperation(String path,
-                                          String httpMethod,
-                                          Operation operation,
-                                          List<Server> servers) {
-        CodegenOperation op = super.fromOperation(path, httpMethod, operation, servers);
-        op.operationId = sanitizeName(op.operationId);
-        return op;
+    @SuppressWarnings("static-method")
+    public String toOperationId(String operationId) {
+        return sanitizeName(super.toOperationId(operationId));
     }
 }

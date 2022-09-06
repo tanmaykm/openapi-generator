@@ -13,44 +13,35 @@ end
 
     {{classname}}(;
 {{#allVars}}
-        {{name}}={{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}},
+        {{{name}}}={{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}},
 {{/allVars}}
     )
 
 {{#allVars}}
-    - {{name}}::{{datatype}}{{#description}} : {{description}}{{/description}}
+    - {{{name}}}::{{datatype}}{{#description}} : {{description}}{{/description}}
 {{/allVars}}
 """
 Base.@kwdef mutable struct {{classname}} <: OpenAPIClient.APIModel
 {{#allVars}}
-    {{name}}::Any = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}} # spec type: Union{ Nothing, {{datatype}} } # spec name: {{baseName}}
+    {{{name}}} = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}} # spec type: Union{ Nothing, {{datatype}} }
 {{/allVars}}
 
-    function {{classname}}({{#allVars}}{{name}}, {{/allVars}})
+    function {{classname}}({{#allVars}}{{{name}}}, {{/allVars}})
         {{#allVars}}
-        validate_property({{classname}}, Symbol("{{baseName}}"), {{name}})
+        validate_property({{classname}}, Symbol("{{baseName}}"), {{{name}}})
         {{/allVars}}
-        return new({{#allVars}}{{name}}, {{/allVars}})
+        return new({{#allVars}}{{{name}}}, {{/allVars}})
     end
 end # type {{classname}}
 
-const _property_map_{{classname}} = Dict{Symbol,Symbol}({{#allVars}}Symbol("{{baseName}}")=>Symbol("{{name}}"), {{/allVars}})
 const _property_types_{{classname}} = Dict{Symbol,String}({{#allVars}}Symbol("{{baseName}}")=>"{{datatype}}", {{/allVars}})
-Base.propertynames(::Type{ {{classname}} }) = collect(keys(_property_map_{{classname}}))
 OpenAPIClient.property_type(::Type{ {{classname}} }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_{{classname}}[name]))}
-OpenAPIClient.field_name(::Type{ {{classname}} }, property_name::Symbol) =  _property_map_{{classname}}[property_name]
-{{#allVars}}
-{{#isEnum}}
-
-const _allowed_{{classname}}_{{baseName}} = [{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]
-{{/isEnum}}
-{{/allVars}}
 
 function check_required(o::{{classname}})
 {{#allVars}}
 {{^isEnum}}
 {{#required}}
-    (getproperty(o, Symbol("{{baseName}}")) === nothing) && (return false)
+    o.{{{name}}} === nothing && (return false)
 {{/required}}
 {{/isEnum}}
 {{/allVars}}
@@ -61,7 +52,7 @@ function validate_property(::Type{ {{classname}} }, name::Symbol, val)
 {{#allVars}}
 {{#isEnum}}
     if name === Symbol("{{baseName}}")
-        OpenAPIClient.validate_param(name, "{{classname}}", :enum, val, _allowed_{{classname}}_{{baseName}})
+        OpenAPIClient.validate_param(name, "{{classname}}", :enum, val, [{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}])
     end
 {{/isEnum}}
 {{^isEnum}}
