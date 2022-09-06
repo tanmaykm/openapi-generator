@@ -178,9 +178,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
 
     @Override
     public String toModelFilename(String name) {
-        name = sanitizeName(name);
-        name = name.replaceAll("$", "");
-        return "model_" + camelize(dropDots(name));
+        return "model_" + toModelName(name);
     }
 
     @Override
@@ -277,6 +275,7 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
             result = result + "_" + modelNameSuffix;
         }
 
+        result = dropDots(result);
         // camelize the model name
         // phone_number => PhoneNumber
         result = camelize(result);
