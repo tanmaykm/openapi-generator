@@ -11,7 +11,7 @@ include("modelincludes.jl")
 {{#apiInfo}}{{#apis}}
 include("api_{{classname}}.jl"){{/apis}}{{/apiInfo}}
 
-export check_required, property_type, hasproperty, propertynames, validate_property, convert
+export check_required
 
 # export models
 {{#models}}{{#model}}export {{classname}}
