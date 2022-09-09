@@ -23,7 +23,7 @@ end
 """
 Base.@kwdef mutable struct {{classname}} <: OpenAPIClient.APIModel
 {{#allVars}}
-    {{{name}}} = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}} # spec type: Union{ Nothing, {{datatype}} }
+    {{{name}}}{{#isPrimitiveType}}::Union{Nothing, {{{datatype}}}}{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isContainer}}::Union{Nothing, {{#isMap}}Dict{{/isMap}}{{^isMap}}Vector{{/isMap}}}{{/isContainer}}{{/isPrimitiveType}} = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}}{{^isPrimitiveType}} # spec type: Union{ Nothing, {{datatype}} }{{/isPrimitiveType}}
 {{/allVars}}
 
     function {{classname}}({{#allVars}}{{{name}}}, {{/allVars}})

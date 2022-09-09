@@ -85,27 +85,36 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
 
         // Language Specific Primitives.  These types will not trigger imports by the client generator
         languageSpecificPrimitives = new HashSet<String>(
-            Arrays.asList("Int128", "Int64", "Int32", "Int16", "Int8", "UInt128", "UInt64", "UInt32", "UInt16", "UInt8", "Float64", "Float32", "Float16", "Char", "Vector", "Array", "Bool", "String", "Integer", "Nothing")
+            Arrays.asList("Integer", "Int128", "Int64", "Int32", "Int16", "Int8", "UInt128", "UInt64", "UInt32", "UInt16", "UInt8", "Float64", "Float32", "Float16", "Char", "Vector", "Dict", "Vector{UInt8}", "Bool", "String", "Date", "DateTime", "ZonedDateTime", "Nothing", "Any")
         );
 
         typeMapping.clear();
-        typeMapping.put("integer", "Int32");
+        typeMapping.put("int", "Int64");
+        typeMapping.put("integer", "Int64");
         typeMapping.put("long", "Int64");
+        typeMapping.put("short", "Int32");
+        typeMapping.put("byte", "UInt8");
         typeMapping.put("float", "Float32");
         typeMapping.put("double", "Float64");
         typeMapping.put("string", "String");
-        typeMapping.put("byte", "UInt8");
+        typeMapping.put("char", "String");
         typeMapping.put("binary", "Vector{UInt8}");
         typeMapping.put("boolean", "Bool");
-        typeMapping.put("number", "Float32");
+        typeMapping.put("number", "Float64");
+        typeMapping.put("decimal", "Float64");
         typeMapping.put("array", "Vector");
+        typeMapping.put("set", "Vector");
         typeMapping.put("map", "Dict");
         typeMapping.put("date", "Date");
-        typeMapping.put("Object", "Any");
         typeMapping.put("DateTime", "ZonedDateTime");
         typeMapping.put("File", "String");
+        typeMapping.put("file", "String");
         typeMapping.put("UUID", "String");
+        typeMapping.put("URI", "String");
         typeMapping.put("ByteArray", "Vector{UInt8}");
+        typeMapping.put("object", "Any");
+        typeMapping.put("Object", "Any");
+        typeMapping.put("AnyType", "Any");
 
         cliOptions.clear();
         cliOptions.add(new CliOption(CodegenConstants.PACKAGE_NAME, "Julia package name.").defaultValue("APIClient"));
@@ -293,12 +302,15 @@ public class JuliaClientCodegen extends DefaultCodegen implements CodegenConfig 
             ArraySchema ap = (ArraySchema) schema;
             Schema inner = ap.getItems();
             return getSchemaType(schema) + "{" + getTypeDeclaration(inner) + "}";
+        } else if (ModelUtils.isSet(schema)) {
+            Schema inner = getAdditionalProperties(schema);
+            return getSchemaType(schema) + "{" + getTypeDeclaration(inner) + "}";
         } else if (ModelUtils.isMapSchema(schema)) {
             Schema inner = getAdditionalProperties(schema);
             return getSchemaType(schema) + "{String, " + getTypeDeclaration(inner) + "}";
         }
         return super.getTypeDeclaration(schema);
-    }    
+    }
 
 
     /**
