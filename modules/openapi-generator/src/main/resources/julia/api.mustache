@@ -62,7 +62,7 @@ end
 
 Return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}
 """
-function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
     _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=in_{{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
     OpenAPIClient.exec(_ctx)
 end
