@@ -1,0 +1,79 @@
+{{>partial_header}}
+{{#operations}}
+struct {{classname}} <: OpenAPI.APIClientImpl
+    client::OpenAPI.Clients.Client
+end
+
+{{#operation}}
+function _oacinternal_{{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+{{#allParams}}
+{{#hasValidation}}
+{{#maxLength}}
+    OpenAPI.validate_param("{{paramName}}", "{{operationId}}", :maxLength, in_{{paramName}}, {{maxLength}})
+{{/maxLength}}
+{{#minLength}}
+    OpenAPI.validate_param("{{paramName}}", "{{operationId}}", :minLength, in_{{paramName}}, {{minLength}})
+{{/minLength}}
+{{#maximum}}
+    OpenAPI.validate_param("{{paramName}}", "{{operationId}}", :maximum, in_{{paramName}}, {{maximum}}, {{#exclusiveMaximum}}true{{/exclusiveMaximum}}{{^exclusiveMaximum}}false{{/exclusiveMaximum}})
+{{/maximum}}
+{{#minimum}}
+    OpenAPI.validate_param("{{paramName}}", "{{operationId}}", :minimum, in_{{paramName}}, {{minimum}}, {{#exclusiveMinimum}}true{{/exclusiveMinimum}}{{^exclusiveMinimum}}false{{/exclusiveMinimum}})
+{{/minimum}}
+{{#maxItems}}
+    OpenAPI.validate_param("{{paramName}}", "{{operationId}}", :maxItems, in_{{paramName}}, {{maxItems}})
+{{/maxItems}}
+{{#minItems}}
+    OpenAPI.validate_param("{{paramName}}", "{{operationId}}", :minItems, in_{{paramName}}, {{minItems}})
+{{/minItems}}
+
+{{/hasValidation}}
+{{/allParams}}
+    _ctx = OpenAPI.Clients.Ctx(_api.client, "{{httpMethod}}", {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}, "{{path}}", [{{#authMethods}}"{{name}}", {{/authMethods}}]{{#bodyParam}}, in_{{paramName}}{{/bodyParam}})
+{{#pathParams}}
+    OpenAPI.Clients.set_param(_ctx.path, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+{{/pathParams}}
+{{#queryParams}}
+    OpenAPI.Clients.set_param(_ctx.query, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+{{/queryParams}}
+{{#headerParams}}
+    OpenAPI.Clients.set_param(_ctx.header, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+{{/headerParams}}
+{{#formParams}}
+{{^isFile}}
+    OpenAPI.Clients.set_param(_ctx.form, "{{baseName}}", in_{{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
+{{/isFile}}
+{{#isFile}}
+    OpenAPI.Clients.set_param(_ctx.file, "{{baseName}}", in_{{paramName}})  # type {{dataType}}
+{{/isFile}}
+{{/formParams}}
+    OpenAPI.Clients.set_header_accept(_ctx, [{{#produces}}"{{{mediaType}}}", {{/produces}}])
+    OpenAPI.Clients.set_header_content_type(_ctx, (_mediaType === nothing) ? [{{#consumes}}"{{{mediaType}}}", {{/consumes}}] : [_mediaType])
+    return _ctx
+end
+
+@doc raw"""{{#summary.length}}{{{summary}}}
+
+{{/summary.length}}{{#notes.length}}{{{notes}}}
+
+{{/notes.length}}Params:
+{{#allParams}}- in_{{paramName}}::{{dataType}}{{#required}} (required){{/required}}
+{{/allParams}}
+
+Return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}
+"""
+function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+    _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=in_{{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
+    OpenAPI.Clients.exec(_ctx)
+end
+
+function {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
+    _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, in_{{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=in_{{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
+    OpenAPI.Clients.exec(_ctx, response_stream)
+end
+
+{{/operation}}
+{{#operation}}
+export {{operationId}}
+{{/operation}}
+{{/operations}}
