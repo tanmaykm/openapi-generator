@@ -79,6 +79,12 @@ function OpenAPI.validate_property(::Type{ {{classname}} }, name::Symbol, val)
 {{#uniqueItems}}
         OpenAPI.validate_param(name, "{{classname}}", :uniqueItems, val, {{uniqueItems}})
 {{/uniqueItems}}
+{{#maxProperties}}
+        OpenAPI.validate_param(name, "{{classname}}", :maxProperties, val, {{maxProperties}})
+{{/maxProperties}}
+{{#minProperties}}
+        OpenAPI.validate_param(name, "{{classname}}", :minProperties, val, {{minProperties}})
+{{/minProperties}}
 {{#pattern}}
         OpenAPI.validate_param(name, "{{classname}}", :pattern, val, r"{{{pattern}}}")
 {{/pattern}}
