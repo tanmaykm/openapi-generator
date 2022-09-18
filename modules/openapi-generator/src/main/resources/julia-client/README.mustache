@@ -48,8 +48,10 @@ Class | Method | HTTP request | Description
 
 Example
 ```
-    using OpenAPIClient
-    client = OpenAPIClient.Client(server_uri)
+    using OpenAPI
+    using OpenAPI.Clients
+    import OpenAPI.Clients: Client
+    client = Client(server_uri)
     api = MyApi(client)
     result = callApi(api, args...; api_key)
 ```
@@ -58,9 +60,11 @@ Example
 
 Example
 ```
-    using OpenAPIClient
-    client = OpenAPIClient.Client(server_uri)
-    OpenAPIClient.set_header(client, "Authorization", "Basic $basic_auth")
+    using OpenAPI
+    using OpenAPI.Clients
+    import OpenAPI.Clients: Client, set_header
+    client = Client(server_uri)
+    set_header(client, "Authorization", "Basic $basic_auth")
     api = MyApi(client)
     result = callApi(api, args...; api_key)
 ```
@@ -74,9 +78,11 @@ Example
 
 Example
 ```
-    using OpenAPIClient
-    client = OpenAPIClient.Client(server_uri)
-    OpenAPIClient.set_header(client, "Authorization", "Bearer $bearer_auth")
+    using OpenAPI
+    using OpenAPI.Clients
+    import OpenAPI.Clients: Client, set_header
+    client = Client(server_uri)
+    set_header(client, "Authorization", "Bearer $bearer_auth")
     api = MyApi(client)
     result = callApi(api, args...; api_key)
 ```

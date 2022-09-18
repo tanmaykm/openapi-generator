@@ -4,7 +4,7 @@ import org.openapitools.codegen.*;
 
 import java.io.File;
 
-public class JuliaClientCodegen extends AbstractJuliaCodegen {    
+public class JuliaServerCodegen extends AbstractJuliaCodegen {
     /**
      * Configures the type of generator.
      *
@@ -12,7 +12,7 @@ public class JuliaClientCodegen extends AbstractJuliaCodegen {
      * @see org.openapitools.codegen.CodegenType
      */
     public CodegenType getTag() {
-        return CodegenType.CLIENT;
+        return CodegenType.SERVER;
     }
 
     /**
@@ -22,7 +22,7 @@ public class JuliaClientCodegen extends AbstractJuliaCodegen {
      * @return the name of the generator
      */
     public String getName() {
-        return "julia-client";
+        return "julia-server";
     }
 
     /**
@@ -32,26 +32,19 @@ public class JuliaClientCodegen extends AbstractJuliaCodegen {
      * @return the help message for the generator
      */
     public String getHelp() {
-        return "Generates a julia client.";
+        return "Generates a julia server.";
     }
 
-    public JuliaClientCodegen() {
+    public JuliaServerCodegen() {
         super();
 
-        outputFolder = "generated-code" + File.separator + "julia-client";
+        outputFolder = "generated-code" + File.separator + "julia-server";
         modelTemplateFiles.put("model.mustache", ".jl");
         apiTemplateFiles.put("api.mustache", ".jl");
-        embeddedTemplateDir = templateDir = "julia-client";
-        modelDocTemplateFiles.put("model_doc.mustache", ".md");
-        apiDocTemplateFiles.put("api_doc.mustache", ".md");
+        embeddedTemplateDir = templateDir = "julia-server";
 
-        // apiPackage = "Apis";
-        // modelPackage = "Models";
         supportingFiles.clear();
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
-
-        cliOptions.clear();
-        cliOptions.add(new CliOption(CodegenConstants.PACKAGE_NAME, "Julia client package name.").defaultValue("APIClient"));
     }
 
     @Override
@@ -61,12 +54,10 @@ public class JuliaClientCodegen extends AbstractJuliaCodegen {
             setPackageName((String) additionalProperties.get(CodegenConstants.PACKAGE_NAME));
         }
         else {
-            setPackageName("APIClient");
+            setPackageName("APIServer");
             additionalProperties.put(CodegenConstants.PACKAGE_NAME, packageName);
         }
-        additionalProperties.put("apiDocPath", apiDocPath);
-        additionalProperties.put("modelDocPath", modelDocPath);
-        supportingFiles.add(new SupportingFile("client.mustache", srcPath, packageName + ".jl"));
+        supportingFiles.add(new SupportingFile("server.mustache", srcPath, packageName + ".jl"));
         supportingFiles.add(new SupportingFile("modelincludes.mustache", srcPath, "modelincludes.jl"));
     }
 }

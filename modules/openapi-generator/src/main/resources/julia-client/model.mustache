@@ -21,21 +21,21 @@ end
     - {{{name}}}::{{datatype}}{{#description}} : {{description}}{{/description}}
 {{/allVars}}
 """
-Base.@kwdef mutable struct {{classname}} <: OpenAPIClient.APIModel
+Base.@kwdef mutable struct {{classname}} <: OpenAPI.APIModel
 {{#allVars}}
     {{{name}}}{{#isPrimitiveType}}::Union{Nothing, {{{datatype}}}}{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isContainer}}::Union{Nothing, {{#isMap}}Dict{{/isMap}}{{^isMap}}Vector{{/isMap}}}{{/isContainer}}{{/isPrimitiveType}} = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}nothing{{/defaultValue}}{{^isPrimitiveType}} # spec type: Union{ Nothing, {{datatype}} }{{/isPrimitiveType}}
 {{/allVars}}
 
     function {{classname}}({{#allVars}}{{{name}}}, {{/allVars}})
         {{#allVars}}
-        validate_property({{classname}}, Symbol("{{baseName}}"), {{{name}}})
+        OpenAPI.validate_property({{classname}}, Symbol("{{baseName}}"), {{{name}}})
         {{/allVars}}
         return new({{#allVars}}{{{name}}}, {{/allVars}})
     end
 end # type {{classname}}
 
 const _property_types_{{classname}} = Dict{Symbol,String}({{#allVars}}Symbol("{{baseName}}")=>"{{datatype}}", {{/allVars}})
-OpenAPIClient.property_type(::Type{ {{classname}} }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_{{classname}}[name]))}
+OpenAPI.property_type(::Type{ {{classname}} }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_{{classname}}[name]))}
 
 function check_required(o::{{classname}})
 {{#allVars}}
@@ -48,33 +48,33 @@ function check_required(o::{{classname}})
     true
 end
 
-function validate_property(::Type{ {{classname}} }, name::Symbol, val)
+function OpenAPI.validate_property(::Type{ {{classname}} }, name::Symbol, val)
 {{#allVars}}
 {{#isEnum}}
     if name === Symbol("{{baseName}}")
-        OpenAPIClient.validate_param(name, "{{classname}}", :enum, val, [{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}])
+        OpenAPI.validate_param(name, "{{classname}}", :enum, val, [{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}])
     end
 {{/isEnum}}
 {{^isEnum}}
 {{#hasValidation}}
     if name === Symbol("{{baseName}}")
 {{#maxLength}}
-        OpenAPIClient.validate_param(name, "{{classname}}", :maxLength, val, {{maxLength}})
+        OpenAPI.validate_param(name, "{{classname}}", :maxLength, val, {{maxLength}})
 {{/maxLength}}
 {{#minLength}}
-        OpenAPIClient.validate_param(name, "{{classname}}", :minLength, val, {{minLength}})
+        OpenAPI.validate_param(name, "{{classname}}", :minLength, val, {{minLength}})
 {{/minLength}}
 {{#maximum}}
-        OpenAPIClient.validate_param(name, "{{classname}}", :maximum, val, {{maximum}}, {{#exclusiveMaximum}}true{{/exclusiveMaximum}}{{^exclusiveMaximum}}false{{/exclusiveMaximum}})
+        OpenAPI.validate_param(name, "{{classname}}", :maximum, val, {{maximum}}, {{#exclusiveMaximum}}true{{/exclusiveMaximum}}{{^exclusiveMaximum}}false{{/exclusiveMaximum}})
 {{/maximum}}
 {{#minimum}}
-        OpenAPIClient.validate_param(name, "{{classname}}", :minimum, val, {{minimum}}, {{#exclusiveMinimum}}true{{/exclusiveMinimum}}{{^exclusiveMinimum}}false{{/exclusiveMinimum}})
+        OpenAPI.validate_param(name, "{{classname}}", :minimum, val, {{minimum}}, {{#exclusiveMinimum}}true{{/exclusiveMinimum}}{{^exclusiveMinimum}}false{{/exclusiveMinimum}})
 {{/minimum}}
 {{#maxItems}}
-        OpenAPIClient.validate_param(name, "{{classname}}", :maxItems, val, {{maxItems}})
+        OpenAPI.validate_param(name, "{{classname}}", :maxItems, val, {{maxItems}})
 {{/maxItems}}
 {{#minItems}}
-        OpenAPIClient.validate_param(name, "{{classname}}", :minItems, val, {{minItems}})
+        OpenAPI.validate_param(name, "{{classname}}", :minItems, val, {{minItems}})
 {{/minItems}}
     end
 {{/hasValidation}}
