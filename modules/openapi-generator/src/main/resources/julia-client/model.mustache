@@ -76,6 +76,9 @@ function OpenAPI.validate_property(::Type{ {{classname}} }, name::Symbol, val)
 {{#minItems}}
         OpenAPI.validate_param(name, "{{classname}}", :minItems, val, {{minItems}})
 {{/minItems}}
+{{#pattern}}
+        OpenAPI.validate_param(name, "{{classname}}", :pattern, val, r"{{{pattern}}}")
+{{/pattern}}
     end
 {{/hasValidation}}
 {{/isEnum}}
