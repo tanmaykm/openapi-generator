@@ -331,6 +331,13 @@ public class AbstractJuliaCodegen extends DefaultCodegen implements CodegenConfi
         return name;
     }
 
+    protected String escapeRegex(String pattern) {
+        pattern = pattern.replaceAll("\\\\\\\\", "\\\\");
+        pattern = pattern.replaceAll("^/", "");
+        pattern = pattern.replaceAll("/$", "");
+        return pattern;
+    }
+
     /**
      * Convert OpenAPI Parameter object to Codegen Parameter object
      *
@@ -342,6 +349,9 @@ public class AbstractJuliaCodegen extends DefaultCodegen implements CodegenConfi
     public CodegenParameter fromParameter(Parameter param, Set<String> imports) {
         CodegenParameter parameter = super.fromParameter(param, imports);
         parameter.baseName = escapeBaseName(parameter.baseName);
+        if (parameter.pattern != null) {
+            parameter.pattern = escapeRegex(parameter.pattern);
+        }
         return parameter;
     }
 
@@ -366,6 +376,9 @@ public class AbstractJuliaCodegen extends DefaultCodegen implements CodegenConfi
         // if the name needs any escaping, we set it to var"name"
         if (needsVarEscape(property.name)) {
             property.name = "var\"" + property.name + "\"";
+        }
+        if (property.pattern != null) {
+            property.pattern = escapeRegex(property.pattern);
         }
         return property;
     }
