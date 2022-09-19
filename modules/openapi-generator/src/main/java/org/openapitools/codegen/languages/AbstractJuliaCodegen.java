@@ -7,6 +7,8 @@ import java.util.*;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.servers.Server;
 
 import org.apache.commons.lang3.StringUtils;
 import static org.openapitools.codegen.utils.StringUtils.camelize;
@@ -15,7 +17,9 @@ import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractJuliaCodegen extends DefaultCodegen implements CodegenConfig {
+import com.google.common.base.CaseFormat;
+
+public class AbstractJuliaCodegen extends DefaultCodegen {
     protected final Logger LOGGER = LoggerFactory.getLogger(AbstractJuliaCodegen.class);
 
     protected String srcPath = "src";
@@ -144,12 +148,16 @@ public class AbstractJuliaCodegen extends DefaultCodegen implements CodegenConfi
 
     @Override
     public String toParamName(String name) {
-        return escapeReservedWord(sanitizeName(name));
+        name = camelize(sanitizeName(name), true);
+        name = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+        return escapeReservedWord(name);
     }
 
     @Override
     public String toApiVarName(String name) {
-        return escapeReservedWord(sanitizeName(name));
+        name = camelize(sanitizeName(name), true);
+        name = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+        return escapeReservedWord(name);
     }
 
     @Override
@@ -391,6 +399,54 @@ public class AbstractJuliaCodegen extends DefaultCodegen implements CodegenConfi
      */
     @SuppressWarnings("static-method")
     public String toOperationId(String operationId) {
-        return sanitizeName(super.toOperationId(operationId));
+        operationId = camelize(super.toOperationId(operationId), true);
+        operationId = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, operationId);
+        return sanitizeName(operationId);
+    }
+
+    private void changeParamNames(List<CodegenParameter> paramsList, HashSet<String> reservedNames) {
+        // check if any param name clashes with type name and rename it
+        for (CodegenParameter param : paramsList) {
+            if (reservedNames.contains(param.paramName)) {
+                do {
+                    param.paramName = param.paramName + "_";
+                } while (reservedNames.contains(param.paramName + "param"));
+                param.paramName = param.paramName + "param";
+            }
+        }
+    }
+    
+    /**
+     * Convert OAS Operation object to Codegen Operation object
+     *
+     * @param httpMethod HTTP method
+     * @param operation  OAS operation object
+     * @param path       the path of the operation
+     * @param servers    list of servers
+     * @return Codegen Operation object
+     */
+    @Override
+    public CodegenOperation fromOperation(String path,
+                                          String httpMethod,
+                                          Operation operation,
+                                          List<Server> servers) {
+        CodegenOperation op = super.fromOperation(path, httpMethod, operation, servers);
+
+        // collect all reserved names
+        HashSet<String> reservedNames = new HashSet<String>();
+        reservedNames.add(op.returnType);
+        reservedNames.add(op.operationId);
+        for (CodegenParameter param : op.allParams) {
+            reservedNames.add(param.dataType);
+        }
+
+        changeParamNames(op.allParams, reservedNames);
+        changeParamNames(op.bodyParams, reservedNames);
+        changeParamNames(op.headerParams, reservedNames);
+        changeParamNames(op.pathParams, reservedNames);
+        changeParamNames(op.queryParams, reservedNames);
+        changeParamNames(op.formParams, reservedNames);
+
+        return op;
     }
 }

@@ -11,8 +11,8 @@ Method | HTTP request | Description
 {{#operations}}
 {{#operation}}
 # **{{{operationId}}}**
-> {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}} <br/>
-> {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, in_{{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} in_{{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}}
+> {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}} <br/>
+> {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}}
 
 {{{summary}}}{{#notes}}
 
@@ -23,13 +23,13 @@ Method | HTTP request | Description
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **_api** | **{{classname}}** | API context | {{/-last}}{{/allParams}}{{#allParams}}{{#required}}
-**in_{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**{{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{.}}]{{/defaultValue}}{{/required}}{{/allParams}}{{#hasOptionalParams}}
+**{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**{{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{.}}]{{/defaultValue}}{{/required}}{{/allParams}}{{#hasOptionalParams}}
 
 ### Optional Parameters
 {{#allParams}}{{#-last}}
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------{{/-last}}{{/allParams}}{{#allParams}}{{^required}}
- **in_{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**{{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{.}}]{{/defaultValue}}{{/required}}{{/allParams}}{{/hasOptionalParams}}
+ **{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**{{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{.}}]{{/defaultValue}}{{/required}}{{/allParams}}{{/hasOptionalParams}}
 
 ### Return type
 
