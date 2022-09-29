@@ -29,7 +29,17 @@ function _oacinternal_{{operationId}}(_api::{{classname}}{{#allParams}}{{#requir
 
 {{/hasValidation}}
 {{/allParams}}
-    _ctx = OpenAPI.Clients.Ctx(_api.client, "{{httpMethod}}", {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}, "{{path}}", [{{#authMethods}}"{{name}}", {{/authMethods}}]{{#bodyParam}}, {{paramName}}{{/bodyParam}})
+    return_types = Dict{Regex,Type}()
+    {{#responses}}
+    {{#dataType}}
+    return_types[Regex("^" * replace("{{{code}}}", "x"=>".") * "\$")] = {{{dataType}}}
+    {{/dataType}}
+    {{^dataType}}
+    return_types[Regex("^" * replace("{{{code}}}", "x"=>".") * "\$")] = Nothing
+    {{/dataType}}
+    {{/responses}}
+
+    _ctx = OpenAPI.Clients.Ctx(_api.client, "{{httpMethod}}", return_types, "{{path}}", [{{#authMethods}}"{{name}}", {{/authMethods}}]{{#bodyParam}}, {{paramName}}{{/bodyParam}})
 {{#pathParams}}
     OpenAPI.Clients.set_param(_ctx.path, "{{baseName}}", {{paramName}}{{#isListContainer}}; collection_format="{{collectionFormat}}"{{/isListContainer}})  # type {{dataType}}
 {{/pathParams}}
@@ -64,12 +74,12 @@ Return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/ret
 """
 function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
     _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, {{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}={{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
-    OpenAPI.Clients.exec(_ctx)
+    return OpenAPI.Clients.exec(_ctx)
 end
 
 function {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
     _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, {{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}={{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)
-    OpenAPI.Clients.exec(_ctx, response_stream)
+    return OpenAPI.Clients.exec(_ctx, response_stream)
 end
 
 {{/operation}}
