@@ -70,7 +70,7 @@ end
 {{#allParams}}- {{paramName}}::{{dataType}}{{#required}} (required){{/required}}
 {{/allParams}}
 
-Return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}
+Return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}, OpenAPI.Clients.ApiResponse
 """
 function {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing)
     _ctx = _oacinternal_{{operationId}}(_api{{#allParams}}{{#required}}, {{paramName}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}={{paramName}},{{/required}}{{/allParams}} _mediaType=_mediaType)

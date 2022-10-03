@@ -11,8 +11,8 @@ Method | HTTP request | Description
 {{#operations}}
 {{#operation}}
 # **{{{operationId}}}**
-> {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}} <br/>
-> {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing){{#returnType}} -> {{{.}}} {{/returnType}}
+> {{operationId}}(_api::{{classname}}{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing) -> {{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}, OpenAPI.Clients.ApiResponse <br/>
+> {{operationId}}(_api::{{classname}}, response_stream::Channel{{#allParams}}{{#required}}, {{paramName}}::{{dataType}}{{/required}}{{/allParams}};{{#allParams}}{{^required}} {{paramName}}=nothing,{{/required}}{{/allParams}} _mediaType=nothing) -> Channel{ {{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Nothing{{/returnType}} }, OpenAPI.Clients.ApiResponse
 
 {{{summary}}}{{#notes}}
 
@@ -33,7 +33,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-{{#returnType}}{{#returnTypeIsPrimitive}}**{{{returnType}}}**{{/returnTypeIsPrimitive}}{{^returnTypeIsPrimitive}}[**{{{returnType}}}**]({{returnBaseType}}.md){{/returnTypeIsPrimitive}}{{/returnType}}{{^returnType}} nothing{{/returnType}}
+{{#returnType}}{{#returnTypeIsPrimitive}}**{{{returnType}}}**{{/returnTypeIsPrimitive}}{{^returnTypeIsPrimitive}}[**{{{returnType}}}**]({{returnBaseType}}.md){{/returnTypeIsPrimitive}}{{/returnType}}{{^returnType}}Nothing{{/returnType}}
 
 ### Authorization
 
