@@ -52,7 +52,7 @@ function OpenAPI.validate_property(::Type{ {{classname}} }, name::Symbol, val)
 {{#allVars}}
 {{#isEnum}}
     if name === Symbol("{{baseName}}")
-        OpenAPI.validate_param(name, "{{classname}}", :enum, val, [{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}])
+        OpenAPI.validate_param(name, "{{classname}}", :enum, val, [{{#_enum}}"{{.}}"{{^-last}}, {{/-last}}{{/_enum}}])
     end
 {{/isEnum}}
 {{^isEnum}}
